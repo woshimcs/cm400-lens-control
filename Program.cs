@@ -24,7 +24,7 @@ static class Program
         };
         if (target == byte.MaxValue)
         {
-            Console.Error.WriteLine("用法: cm400-lens <extend|retract|status>");
+            Console.Error.WriteLine("用法 / Usage: cm400-lens <extend|retract|status>");
             return 2;
         }
 
@@ -35,7 +35,7 @@ static class Program
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine("没有找到 CM400: " + ex.Message);
+            Console.Error.WriteLine("没有找到 CM400 / CM400 was not found: " + ex.Message);
             return 1;
         }
 
@@ -48,7 +48,7 @@ static class Program
         int hr = CameraControl.Set(control, target.Value);
         if (hr != 0)
         {
-            Console.Error.WriteLine("写入失败 " + Hex(hr));
+            Console.Error.WriteLine("写入失败 / Write failed " + Hex(hr));
             return 1;
         }
 
@@ -56,7 +56,7 @@ static class Program
         Console.WriteLine(Describe(current));
         if (current != target.Value)
         {
-            Console.Error.WriteLine("摄像头没有保持目标值 " + target.Value);
+            Console.Error.WriteLine("摄像头没有保持目标值 / Camera did not keep target " + target.Value);
             return 1;
         }
         return 0;
@@ -64,14 +64,14 @@ static class Program
 
     static string Describe(byte? value)
     {
-        if (value == null) return "读不到开关 4";
+        if (value == null) return "读不到开关 4 / Cannot read switch 4";
         string name = value.Value switch
         {
-            Extend => "伸出",
-            Retract => "收回",
-            _ => "未知"
+            Extend => "伸出 / extended",
+            Retract => "收回 / retracted",
+            _ => "未知 / unknown"
         };
-        return "开关 4 = " + value.Value + "（" + name + "）";
+        return "开关 4 / Switch 4 = " + value.Value + "（" + name + "）";
     }
 
     static string Hex(int hr) => "0x" + unchecked((uint)hr).ToString("X8");
@@ -110,7 +110,7 @@ static class CameraControl
             Marshal.QueryInterface(unknown, ref controlId, out controlPointer);
             return (IKsControl)Marshal.GetObjectForIUnknown(controlPointer);
         }
-        throw new InvalidOperationException("设备不在视频采集列表里");
+        throw new InvalidOperationException("设备不在视频采集列表里 / Device is not in the video capture list");
     }
 
     public static byte? Get(IKsControl control)
